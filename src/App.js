@@ -1,4 +1,4 @@
-import React ,{useState} from 'react';
+import React ,{useEffect, useState, useCallback} from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
@@ -10,13 +10,13 @@ function App() {
   const [error,setError] =useState(null);
 
   //we want use send a http(get) request to the star war api
-  async function fetchMoviesHandler(){
+  const fetchMoviesHandler = useCallback(async () => {
 
     setIsLoading(true);
     setError(null);
     try{
       //can detct the error by giving a wrong API endpoint
-      const response = await fetch('https://swapi.dev/api/film/');
+      const response = await fetch('https://swapi.dev/api/films/');
       if(!response.ok){
         throw new Error('Something went wrong!');
       }
@@ -37,7 +37,11 @@ function App() {
         setError(error.message);
       }
       setIsLoading(false);
-    }
+    },[]);
+
+  useEffect(() => {
+    fetchMoviesHandler();
+  },[fetchMoviesHandler]);
 
   let content = <p>Found no movies.</p>;
 
